@@ -2,8 +2,6 @@ const cwr = require("src/utils/createWebResp");
 const fs = require("fs");
 const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
-// config
-const ncp = require("src/config/ncpConfig");
 
 const oauth2Client = new OAuth2(
   process.env.GOOGLE_CLIENT_ID,
@@ -81,6 +79,28 @@ const postYoutube = async (req, res) => {
   }
 };
 
+// 유튜브 영상 목록 조회
+const getVideoList = async (req, res) => {
+  try {
+    // 1. 재생목록 ID 조회
+    const listOptions = { part: "contentDetails", mine: true };
+    const channels = await youtube.channels.list(listOptions);
+    const contentDetails = channels.data.items[0].contentDetails;
+    const uploadPlaylistId = contentDetails.relatedPlaylists.uploads;
+
+    // 2. 재생목록 조회
+    const response = await youtube.playlistItems.list({
+      part: "snippet",
+      maxResults: 10,
+      playlistId: uploadPlaylistId,
+    });
+
+    return cwr.createWebResp(res, 200, response.data.items);
+  } catch (error) {
+    return cwr.errorWebResp(res, 403, `E0000 - getVideoList`, error.message);
+  }
+};
+
 // 유튜브 영상 수정
 const patchYoutube = async (req, res) => {
   try {
@@ -121,6 +141,7 @@ module.exports = {
   getOauthUrl,
   getOauthCallback,
   postYoutube,
+  getVideoList,
   patchYoutube,
   deleteYoutube,
 };

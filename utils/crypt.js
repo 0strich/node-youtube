@@ -1,7 +1,5 @@
 const crypto = require("crypto");
 const CryptoJS = require("crypto-js");
-// utils
-const { timestamp } = require("src/utils/functions");
 
 // 평문 AES 암호화
 const plainTextAESEncryption = (plainText, secret) => {
@@ -55,7 +53,7 @@ const verify = async (password, hash, salt) => {
 };
 
 // ncp 시그니처 생성
-const makeSignature = (method, url, accessKey, secretKey) => {
+const makeSignature = (method, url, timestamp, accessKey, secretKey) => {
   const space = " "; // one space
   const newLine = "\n"; // new line
 

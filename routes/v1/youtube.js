@@ -14,6 +14,8 @@ router.post(
   controller.postYoutube
 );
 
+router.get("/", controller.getVideoList);
+
 router.patch("/:videoId", controller.patchYoutube);
 
 router.delete("/:videoId", controller.deleteYoutube);

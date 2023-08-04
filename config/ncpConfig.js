@@ -19,6 +19,7 @@ module.exports = {
     "x-ncp-apigw-signature-v2": makeSignature(
       method,
       url,
+      timestamp,
       process.env.NAVER_ACCESS_KEY,
       process.env.NAVER_SECRET_KEY
     ),

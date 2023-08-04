@@ -48,6 +48,31 @@ const cleanObject = (object = {}) => {
   return cleanObject;
 };
 
+// 모바일 OTP 문자 생성
+const generateOtpContent = (service, otp) => {
+  const content = `[${service}] 인증번호: ${otp}\n인증번호를 입력해 주세요.`;
+  return content;
+};
+
+const generateSMSBody = (to, content) => {
+  return {
+    type: "SMS",
+    contentType: "COMM",
+    countryCode: "82",
+    from: "01024998196",
+    content,
+    messages: [{ to }],
+  };
+};
+
 const timestamp = new Date().getTime().toString();
 
-module.exports = { isExist, addSecondsDate, diffDate, cleanObject, timestamp };
+module.exports = {
+  isExist,
+  addSecondsDate,
+  diffDate,
+  cleanObject,
+  generateOtpContent,
+  generateSMSBody,
+  timestamp,
+};
