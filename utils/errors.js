@@ -53,5 +53,4 @@ const errors = {
   E1000: "E1000 - 계정 유무 체크 실패",
 };
 
-export default partnerErrors;
 module.exports = { errors };

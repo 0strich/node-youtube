@@ -1,57 +1,55 @@
-const Promise = require("promise");
 const mongoose = require("mongoose");
 const cwr = require("./createWebResp");
-const config = require("../config/dbConfig");
+const { errors } = require("./errors");
+const { v1, v2 } = require("src/config/dbConfig");
+// models
+const v1Models = require("src/models/v1");
+// const v2Models = require("src/models/v2");
 
-const MONGODB_NAME = config.mongodb_name;
-const MONGODB_USER = config.mongodb_user;
-const MONGODB_PASSWORD = config.mongodb_password;
-const MONGODB_URL = config.mongodb_url;
+const connectOptions = {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  socketTimeoutMS: 5 * 60 * 1000, // socket timeout 5 minutes
+};
 
-const connect = (DB_URI) =>
-  new Promise((resolve, reject) => {
-    if (mongoose.connection.readyState) {
-      // console.log("mongoose.connection.readyState");
-      resolve(mongoose.connection);
-    } else {
-      mongoose
-        .connect(DB_URI, {
-          user: MONGODB_USER,
-          pass: MONGODB_PASSWORD,
-          useUnifiedTopology: true,
-          useNewUrlParser: true,
-          useCreateIndex: true,
-          socketTimeoutMS: 5 * 60 * 1000, // socket timeout 5 minutes
-        })
-        .then((connection) => {
-          console.log("Success DB Connection");
-          resolve(connection);
-        })
-        .catch((err) => {
-          console.log("connection error : ", err);
-          reject(err);
-        });
-    }
-  });
+const connectDB = async (DB_INFO) => {
+  const { dbName, user, pass } = DB_INFO;
+  const dbOptions = { dbName, user, pass };
+  const options = { ...connectOptions, ...dbOptions };
 
-exports.connectDB = async () => {
-  const DB_URI = `mongodb://${MONGODB_URL}/${MONGODB_NAME}`;
-  console.log("DB URI : ", DB_URI);
-  try {
-    await connect(DB_URI);
-  } catch (error) {
-    console.log("E0000 - DB 연결 오류 : ", error);
-  }
+  const connection = mongoose.createConnection(DB_INFO.uri, options);
+  return connection;
+};
+
+const connectAllDBs = async () => {
+  return {
+    v1Connection: await connectDB(v1),
+    // v2Connection: await connectDB(v2),
+  };
 };
 
 // middleWare 사용
-exports.tryConDB = async (req, res, next) => {
-  await this.connectDB().catch((error) => {
-    cwr.errorWebResp(res, 500, "E0000 - DB 연결 오류", error);
-  });
-  next();
+const tryConnectDB = async (req, res, next) => {
+  try {
+    const connections = await connectAllDBs();
+    req.models = {
+      v1: v1Models(connections.v1Connection),
+      // v2: v2Models(connections.v2Connection),
+    };
+    next();
+  } catch (error) {
+    console.log("error: ", error);
+    cwr.errorWebResp(res, 500, errors.E91000, error);
+  }
 };
 
-exports.close = () => {
+const close = () => {
   mongoose.connection.close();
+};
+
+module.exports = {
+  connectAllDBs,
+  tryConnectDB,
+  close,
 };

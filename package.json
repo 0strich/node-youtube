@@ -1,9 +1,9 @@
 {
-  "name": "basecode",
-  "version": "1.0.34",
+  "name": "youtube-node",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www",
+    "start": "nodemon --exec babel-node ./bin/www",
     "patch": "npm version patch --no-git-tag-version",
     "minor": "npm version minor --no-git-tag-version",
     "major": "npm version major --no-git-tag-version"
@@ -24,5 +24,12 @@
     "morgan": "~1.9.1",
     "nodemon": "^2.0.15",
     "pug": "2.0.0-beta11"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.22.9",
+    "@babel/core": "^7.22.9",
+    "@babel/node": "^7.22.6",
+    "@babel/preset-env": "^7.22.9",
+    "babel-plugin-module-resolver": "^5.0.0"
   }
 }

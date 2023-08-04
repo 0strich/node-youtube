@@ -23,13 +23,14 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 
 const indexRouter = require("./routes/index");
-const usersRouter = require("./routes/users");
+const v1Router = require("./routes/v1");
+const v2Router = require("./routes/v2");
 
 const app = express();
 const db = require("./utils/db");
 
-// DB connect
-db.connectDB();
+// database connect
+app.use(db.tryConnectDB);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -46,7 +47,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
-app.use("/users", usersRouter);
+app.use("/v1", v1Router);
+app.use("/v2", v2Router);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
