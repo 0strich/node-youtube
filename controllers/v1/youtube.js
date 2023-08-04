@@ -1,5 +1,4 @@
 const cwr = require("src/utils/createWebResp");
-const axios = require("axios");
 const fs = require("fs");
 const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;

@@ -1,5 +1,7 @@
 const crypto = require("crypto");
 const CryptoJS = require("crypto-js");
+// utils
+const { timestamp } = require("src/utils/functions");
 
 // 평문 AES 암호화
 const plainTextAESEncryption = (plainText, secret) => {

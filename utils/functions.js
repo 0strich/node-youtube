@@ -1,12 +1,12 @@
-const _ = require('lodash');
+const _ = require("lodash");
 
 // 값이 있는지 확인
 const isExist = (data) => {
   const emptyType = [undefined, null, NaN, false];
-  const emptyString = ['undefined', 'null', 'NaN', 'false', ''];
+  const emptyString = ["undefined", "null", "NaN", "false", ""];
   const emptyArray = [...emptyType, ...emptyString];
 
-  if (typeof data === 'object') {
+  if (typeof data === "object") {
     return !_.isEmpty(data) ? true : false;
   } else {
     return !emptyArray.includes(data) ? true : false;
@@ -26,12 +26,12 @@ const diffDate = (date1 = new Date(), date2 = new Date()) => {
 
 // 개체 null, undefined, 공백 제거
 const cleanObject = (object = {}) => {
-  const cleanElements = [null, undefined, 'null', 'undefined'];
-  const cleanObject = {...object};
+  const cleanElements = [null, undefined, "null", "undefined"];
+  const cleanObject = { ...object };
 
   // 문자열 좌우 공백 제거
   Object.keys(cleanObject).forEach((key) => {
-    if (typeof cleanObject[key] === 'string') {
+    if (typeof cleanObject[key] === "string") {
       cleanObject[key] = cleanObject[key].trim();
     }
   });
@@ -50,4 +50,4 @@ const cleanObject = (object = {}) => {
 
 const timestamp = new Date().getTime().toString();
 
-module.exports = {isExist, addSecondsDate, diffDate, cleanObject, timestamp};
+module.exports = { isExist, addSecondsDate, diffDate, cleanObject, timestamp };

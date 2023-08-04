@@ -1,6 +1,6 @@
 {
   "name": "youtube-node",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "scripts": {
     "start": "nodemon --exec babel-node ./bin/www",
