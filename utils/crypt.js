@@ -52,6 +52,31 @@ const verify = async (password, hash, salt) => {
   return hash === cmpHash ? true : false;
 };
 
+// ncp 시그니처 생성
+const makeSignature = (method, url, accessKey, secretKey) => {
+  const space = " "; // one space
+  const newLine = "\n"; // new line
+
+  const hmac = CryptoJS.algo.HMAC.create(CryptoJS.algo.SHA256, secretKey);
+  hmac.update(method);
+  hmac.update(space);
+  hmac.update(url);
+  hmac.update(newLine);
+  hmac.update(timestamp);
+  hmac.update(newLine);
+  hmac.update(accessKey);
+
+  const hash = hmac.finalize();
+
+  return hash.toString(CryptoJS.enc.Base64);
+};
+
+const generateOTP = () => {
+  const num = Math.floor(Math.random() * 1000000); // 0 - 999999
+  const otp = num.toString().padStart(6, "0"); // 6자리로 맞추기 위해 앞에 00추가
+  return otp;
+};
+
 module.exports = {
   plainTextAESEncryption,
   plainTextAESDecryption,
@@ -61,4 +86,6 @@ module.exports = {
   toSha512Hash,
   createHashString,
   verify,
+  makeSignature,
+  generateOTP,
 };
